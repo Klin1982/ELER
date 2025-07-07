@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venn Diagram Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .venn-2 {
+            width: 300px;
+            height: 200px;
+            position: relative;
+        }
+        .circle-a {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            left: 0;
+            top: 25px;
+            mix-blend-mode: multiply;
+            opacity: 0.7;
+        }
+        .circle-b {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            right: 0;
+            top: 25px;
+            mix-blend-mode: multiply;
+            opacity: 0.7;
+        }
+        .venn-3 {
+            width: 300px;
+            height: 250px;
+            position: relative;
+        }
+        .circle-3a {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            left: 75px;
+            top: 0;
+            mix-blend-mode: multiply;
+            opacity: 0.7;
+        }
+        .circle-3b {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            left: 0;
+            top: 75px;
+            mix-blend-mode: multiply;
+            opacity: 0.7;
+        }
+        .circle-3c {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            right: 0;
+            top: 75px;
+            mix-blend-mode: multiply;
+            opacity: 0.7;
+        }
+        .result-badge {
+            transition: all 0.3s ease;
+        }
+        .result-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-indigo-700 mb-2">Venn Diagram Calculator</h1>
+            <p class="text-gray-600">Solve set theory problems with visual diagrams</p>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- 2-Set Calculator -->
+            <div class="bg-white rounded-xl shadow-lg p-6 flex-1">
+                <h2 class="text-2xl font-semibold text-indigo-600 mb-4">2-Set Venn Diagram</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <form id="venn2-form" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Total Elements</label>
+                                <input type="number" id="total2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Set A</label>
+                                <input type="number" id="a2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Set B</label>
+                                <input type="number" id="b2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">A ∩ B (Intersection)</label>
+                                <input type="number" id="ab2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-200">Calculate</button>
+                        </form>
+                    </div>
+                    
+                    <div>
+                        <div class="venn-2 mx-auto mb-4">
+                            <div class="circle-a bg-blue-400" id="circle-a"></div>
+                            <div class="circle-b bg-green-400" id="circle-b"></div>
+                            <div class="text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-bold" id="intersection2"></div>
+                            <div class="text-center absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 text-lg font-bold" id="only-a"></div>
+                            <div class="text-center absolute top-1/4 right-1/4 transform translate-x-1/2 -translate-y-1/2 text-lg font-bold" id="only-b"></div>
+                            <div class="text-center absolute bottom-2 left-1/2 transform -translate-x-1/2 text-sm" id="neither2"></div>
+                        </div>
+                        
+                        <div id="results2" class="hidden space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Only in A:</span>
+                                <span class="font-bold result-badge bg-blue-100 text-blue-800 px-3 py-1 rounded-full" id="only-a-result"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Only in B:</span>
+                                <span class="font-bold result-badge bg-green-100 text-green-800 px-3 py-1 rounded-full" id="only-b-result"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">In both:</span>
+                                <span class="font-bold result-badge bg-purple-100 text-purple-800 px-3 py-1 rounded-full" id="both-result"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">In neither:</span>
+                                <span class="font-bold result-badge bg-gray-100 text-gray-800 px-3 py-1 rounded-full" id="neither-result"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 3-Set Calculator -->
+            <div class="bg-white rounded-xl shadow-lg p-6 flex-1">
+                <h2 class="text-2xl font-semibold text-indigo-600 mb-4">3-Set Venn Diagram</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <form id="venn3-form" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Total Elements</label>
+                                <input type="number" id="total3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Set A</label>
+                                <input type="number" id="a3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Set B</label>
+                                <input type="number" id="b3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Set C</label>
+                                <input type="number" id="c3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">A ∩ B</label>
+                                <input type="number" id="ab3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">A ∩ C</label>
+                                <input type="number" id="ac3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">B ∩ C</label>
+                                <input type="number" id="bc3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">A ∩ B ∩ C</label>
+                                <input type="number" id="abc3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-200">Calculate</button>
+                        </form>
+                    </div>
+                    
+                    <div>
+                        <div class="venn-3 mx-auto mb-4">
+                            <div class="circle-3a bg-blue-400" id="circle-3a"></div>
+                            <div class="circle-3b bg-green-400" id="circle-3b"></div>
+                            <div class="circle-3c bg-yellow-400" id="circle-3c"></div>
+                            
+                            <div class="text-center absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-bold" id="only-a3"></div>
+                            <div class="text-center absolute top-3/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 text-lg font-bold" id="only-b3"></div>
+                            <div class="text-center absolute top-3/4 right-1/4 transform translate-x-1/2 -translate-y-1/2 text-lg font-bold" id="only-c3"></div>
+                            <div class="text-center absolute top-1/2 left-1/3 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold" id="a-and-b3"></div>
+                            <div class="text-center absolute top-1/2 right-1/3 transform translate-x-1/2 -translate-y-1/2 text-sm font-bold" id="a-and-c3"></div>
+                            <div class="text-center absolute top-2/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold" id="b-and-c3"></div>
+                            <div class="text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-bold" id="all-three3"></div>
+                            <div class="text-center absolute bottom-1 left-1/2 transform -translate-x-1/2 text-sm" id="neither3"></div>
+                        </div>
+                        
+                        <div id="results3" class="hidden grid grid-cols-2 gap-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700 text-sm">Only A:</span>
+                                <span class="font-bold result-badge bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm" id="only-a3-result"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700 text-sm">Only B:</span>
+                                <span class="font-bold result-badge bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm" id="only-b3-result"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700 text-sm">Only C:</span>
+                                <span class="font-bold result-badge bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-sm" id="only-c3-result"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700 text-sm">A and B:</span>
+                                <span class="font-bold result-badge bg-teal-100 text-teal-800 px-2 py-1 rounded-full text-sm" id="a-and-b3-result"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700 text-sm">A and C:</span>
+                                <span class="font-bold result-badge bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-sm" id="a-and-c3-result"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700 text-sm">B and C:</span>
+                                <span class="font-bold result-badge bg-lime-100 text-lime-800 px-2 py-1 rounded-full text-sm" id="b-and-c3-result"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700 text-sm">All three:</span>
+                                <span class="font-bold result-badge bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-sm" id="all-three3-result"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700 text-sm">Neither:</span>
+                                <span class="font-bold result-badge bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-sm" id="neither3-result"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 2-Set Venn Diagram Calculator
+        document.getElementById('venn2-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const total = parseInt(document.getElementById('total2').value);
+            const a = parseInt(document.getElementById('a2').value);
+            const b = parseInt(document.getElementById('b2').value);
+            const ab = parseInt(document.getElementById('ab2').value);
+            
+            // Validate inputs
+            if (ab > a || ab > b) {
+                alert('Intersection cannot be larger than individual sets');
+                return;
+            }
+            
+            if (a + b - ab > total) {
+                alert('Sum of sets exceeds total elements');
+                return;
+            }
+            
+            const only_a = a - ab;
+            const only_b = b - ab;
+            const neither = total - (only_a + only_b + ab);
+            
+            // Update diagram
+            document.getElementById('only-a').textContent = only_a;
+            document.getElementById('only-b').textContent = only_b;
+            document.getElementById('intersection2').textContent = ab;
+            document.getElementById('neither2').textContent = neither > 0 ? `Neither: ${neither}` : '';
+            
+            // Update results display
+            document.getElementById('only-a-result').textContent = only_a;
+            document.getElementById('only-b-result').textContent = only_b;
+            document.getElementById('both-result').textContent = ab;
+            document.getElementById('neither-result').textContent = neither;
+            
+            // Show results
+            document.getElementById('results2').classList.remove('hidden');
+            
+            // Adjust circle sizes based on values
+            const maxSize = Math.max(a, b);
+            const scaleA = a / maxSize;
+            const scaleB = b / maxSize;
+            
+            document.getElementById('circle-a').style.width = `${150 * scaleA}px`;
+            document.getElementById('circle-a').style.height = `${150 * scaleA}px`;
+            document.getElementById('circle-b').style.width = `${150 * scaleB}px`;
+            document.getElementById('circle-b').style.height = `${150 * scaleB}px`;
+        });
+        
+        // 3-Set Venn Diagram Calculator
+        document.getElementById('venn3-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const total = parseInt(document.getElementById('total3').value);
+            const a = parseInt(document.getElementById('a3').value);
+            const b = parseInt(document.getElementById('b3').value);
+            const c = parseInt(document.getElementById('c3').value);
+            const ab = parseInt(document.getElementById('ab3').value);
+            const ac = parseInt(document.getElementById('ac3').value);
+            const bc = parseInt(document.getElementById('bc3').value);
+            const abc = parseInt(document.getElementById('abc3').value);
+            
+            // Validate inputs
+            if (abc > ab || abc > ac || abc > bc) {
+                alert('Triple intersection cannot be larger than pairwise intersections');
+                return;
+            }
+            
+            if (ab > a || ab > b || ac > a || ac > c || bc > b || bc > c) {
+                alert('Pairwise intersection cannot be larger than individual sets');
+                return;
+            }
+            
+            const g = abc;
+            const d = ab - g;
+            const e = ac - g;
+            const f = bc - g;
+            const x = a - d - e - g;
+            const y = b - d - f - g;
+            const z = c - e - f - g;
+            
+            const sum = x + y + z + d + e + f + g;
+            
+            if (sum > total) {
+                alert('Sum of all regions exceeds total elements');
+                return;
+            }
+            
+            // Update diagram
+            document.getElementById('only-a3').textContent = x;
+            document.getElementById('only-b3').textContent = y;
+            document.getElementById('only-c3').textContent = z;
+            document.getElementById('a-and-b3').textContent = d;
+            document.getElementById('a-and-c3').textContent = e;
+            document.getElementById('b-and-c3').textContent = f;
+            document.getElementById('all-three3').textContent = g;
+            document.getElementById('neither3').textContent = (total - sum) > 0 ? `Neither: ${total - sum}` : '';
+            
+            // Update results display
+            document.getElementById('only-a3-result').textContent = x;
+            document.getElementById('only-b3-result').textContent = y;
+            document.getElementById('only-c3-result').textContent = z;
+            document.getElementById('a-and-b3-result').textContent = d;
+            document.getElementById('a-and-c3-result').textContent = e;
+            document.getElementById('b-and-c3-result').textContent = f;
+            document.getElementById('all-three3-result').textContent = g;
+            document.getElementById('neither3-result').textContent = total - sum;
+            
+            // Show results
+            document.getElementById('results3').classList.remove('hidden');
+            
+            // Adjust circle sizes based on values
+            const maxSize = Math.max(a, b, c);
+            const scaleA = a / maxSize;
+            const scaleB = b / maxSize;
+            const scaleC = c / maxSize;
+            
+            document.getElementById('circle-3a').style.width = `${150 * scaleA}px`;
+            document.getElementById('circle-3a').style.height = `${150 * scaleA}px`;
+            document.getElementById('circle-3b').style.width = `${150 * scaleB}px`;
+            document.getElementById('circle-3b').style.height = `${150 * scaleB}px`;
+            document.getElementById('circle-3c').style.width = `${150 * scaleC}px`;
+            document.getElementById('circle-3c').style.height = `${150 * scaleC}px`;
+        });
+    </script>
+</body>
+</html>
